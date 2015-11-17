@@ -65,6 +65,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\fase01R.png" />
+    <Content Include="Images\inimigo.png" />
+    <Content Include="Images\moeda.png" />
+    <Content Include="Images\scott.png" />
+    <Content Include="Index.html" />
+    <Content Include="Scripts\game.js" />
+    <Content Include="Scripts\phaser.js" />
+    <Content Include="Scripts\phaser.min.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
