@@ -2,7 +2,7 @@
 
 function mainMenu() {
     var mainMenu = new Phaser.State();
-
+    
     //mainMenu.game = new Phaser.Game();
 
     mainMenu.create = function () {
@@ -23,7 +23,11 @@ function inGame() {
     //inGame.game = new Phaser.Game();
 
     inGame.create = function () {
-
+        backgrounds = inGame.game.add.group();
+        backgrounds.bg1 = backgrounds.create(0, 0, 'background');
+        backgrounds.bg2 = backgrounds.create(1355, 0, 'background');
+        player = inGame.game.add.sprite(0, 0, 'player');
+        //ground = inGame.game.add.sprite()
     }
 
     inGame.update = function () {
