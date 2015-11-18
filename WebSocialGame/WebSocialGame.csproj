@@ -73,6 +73,7 @@
     <Content Include="Scripts\game.js" />
     <Content Include="Scripts\phaser.js" />
     <Content Include="Scripts\phaser.min.js" />
+    <Content Include="Scripts\states.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
