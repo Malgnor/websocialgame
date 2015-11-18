@@ -5,18 +5,17 @@
 
     function preload() {
         game.load.image('background', 'Images/fase01R.png');
+        game.load.image('ground', 'Images/ground.png');
         game.load.image('play', 'Images/play.png');
         game.load.spritesheet('enemy', 'Images/inimigo.png', 40, 70);
         game.load.spritesheet('coin', 'Images/moeda.png', 32, 32);
         game.load.spritesheet('player', 'Images/scott.png', 108, 140);
-
-        game.state.add("inGame", inGame());
-        game.state.add("mainMenu", mainMenu());
     }
 
     function create() {
-        game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.state.start("mainMenu");
+        game.state.add("mainMenu", mainMenu());
+        game.state.add("inGame", inGame(), true);
+        //game.state.start("mainMenu");
     }
 
 }());
