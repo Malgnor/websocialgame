@@ -68,6 +68,7 @@
     <Content Include="Images\fase01R.png" />
     <Content Include="Images\inimigo.png" />
     <Content Include="Images\moeda.png" />
+    <Content Include="Images\play.png" />
     <Content Include="Images\scott.png" />
     <Content Include="Index.html" />
     <Content Include="Scripts\game.js" />

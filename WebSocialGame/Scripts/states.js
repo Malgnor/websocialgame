@@ -3,20 +3,14 @@
 function mainMenu() {
     var mainMenu = new Phaser.State();
 
-    mainMenu.preload = function () {
-
-    }
+    //mainMenu.game = new Phaser.Game();
 
     mainMenu.create = function () {
+        mainMenu.game.add.button(350, 130, 'play', playGame);
     }
 
-
-    mainMenu.update = function () {
-
-    }
-
-    mainMenu.render = function () {
-
+    function playGame() {
+        mainMenu.game.state.start('inGame');
     }
 
     return mainMenu;
@@ -24,10 +18,9 @@ function mainMenu() {
 
 function inGame() {
     var inGame = new Phaser.State();
+    var player, enemies, ground, coins, backgrounds;
 
-    inGame.preload = function () {
-
-    }
+    //inGame.game = new Phaser.Game();
 
     inGame.create = function () {
 
