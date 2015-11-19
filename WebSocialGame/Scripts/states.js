@@ -18,7 +18,7 @@ function inGame() {
     var inGame = new Phaser.State();
     var player, enemies, ground, coins, backgrounds,
     playerSpeed, distance, coinsPicked,
-    spacebarKey, leftKey, rightKey, upKey, aKey, dKey, wKey,
+    escapeKey, spacebarKey, leftKey, rightKey, upKey, aKey, dKey, wKey,
     textSpeed, textCoins, textDistance, textEnd,
     playing;
 
@@ -46,6 +46,7 @@ function inGame() {
         inGame.physics.arcade.enable(ground);
         ground.body.immovable = true;
 
+        escapeKey = inGame.input.keyboard.addKey(Phaser.KeyCode.ESC);
         spacebarKey = inGame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
         leftKey = inGame.input.keyboard.addKey(Phaser.KeyCode.LEFT);
         rightKey = inGame.input.keyboard.addKey(Phaser.KeyCode.RIGHT);
@@ -54,10 +55,12 @@ function inGame() {
         dKey = inGame.input.keyboard.addKey(Phaser.KeyCode.D);
         wKey = inGame.input.keyboard.addKey(Phaser.KeyCode.W);
 
+        escapeKey.onDown.addOnce(function () { inGame.state.start("mainMenu"); });
+
         textSpeed = inGame.add.text(5, 10);
         textCoins = inGame.add.text(5, 35);
         textDistance = inGame.add.text(5, 60);
-        textEnd = inGame.add.text(100, 170, 'Press "spacebar" to play again!');
+        textEnd = inGame.add.text(100, 170, 'Press "spacebar" to play again!\nPress "escape" to go back to menu!');
         textSpeed.stroke = textCoins.stroke = textDistance.stroke = textEnd.stroke = 'white';
         textSpeed.strokeThickness = textCoins.strokeThickness = textDistance.strokeThickness = 2;
         textEnd.strokeThickness = 3;
@@ -146,6 +149,7 @@ function inGame() {
     }
 
     function endGame(player, enemy) {
+        player.alpha = 0.25;
         player.animations.stop();
         spacebarKey.onDown.addOnce(gameReset);
         textEnd.alpha = 1;
@@ -157,6 +161,7 @@ function inGame() {
         enemies.forEach(killEach, this);
         playerSpeed = 2;
         distance = coinsPicked = 0;
+        player.alpha = 1;
         player.animations.getAnimation('right').speed = playerSpeed * 1.75;
         player.animations.play('right');
         textEnd.alpha = 0;

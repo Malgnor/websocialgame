@@ -15,8 +15,8 @@
 
     function create() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.state.add("mainMenu", mainMenu());
-        game.state.add("inGame", inGame(), true);
+        game.state.add("inGame", inGame());
+        game.state.add("mainMenu", mainMenu(), true);
     }
 
 }());

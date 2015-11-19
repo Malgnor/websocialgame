@@ -70,7 +70,7 @@
     <Content Include="Images\moeda.png" />
     <Content Include="Images\play.png" />
     <Content Include="Images\scott.png" />
-    <Content Include="Index.html" />
+    <Content Include="index.html" />
     <Content Include="Scripts\game.js" />
     <Content Include="Scripts\phaser.js" />
     <Content Include="Scripts\phaser.min.js" />
