@@ -75,6 +75,7 @@
     <Content Include="Scripts\phaser.js" />
     <Content Include="Scripts\phaser.min.js" />
     <Content Include="Scripts\states.js" />
+    <Content Include="Styles\index.css" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
