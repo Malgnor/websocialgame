@@ -19,7 +19,7 @@ function inGame() {
     var player, enemies, ground, coins, backgrounds,
     playerSpeed, distance, coinsPicked,
     spacebar,
-    textSpeed, textCoins, textDistance,
+    textSpeed, textCoins, textDistance, textEnd,
     playing;
 
     inGame.create = function () {
@@ -34,14 +34,15 @@ function inGame() {
         enemies = inGame.add.group();
         enemies.enableBody = true;
 
-        player = inGame.add.sprite(0, 160, 'player');
+        player = inGame.add.sprite(25, 160, 'player');
         inGame.physics.arcade.enable(player);
         player.body.gravity.y = 1200;
         player.body.collideWorldBounds = true;
         player.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], playerSpeed * 1.75, true);
+        player.scale = new Phaser.Point(0.5, 0.5);
 
         ground = inGame.add.sprite(0, 300, 'ground');
-        ground.alpha = 0.5;
+        ground.alpha = 0;
         inGame.physics.arcade.enable(ground);
         ground.body.immovable = true;
 
@@ -50,9 +51,11 @@ function inGame() {
         textSpeed = inGame.add.text(5, 10);
         textCoins = inGame.add.text(5, 35);
         textDistance = inGame.add.text(5, 60);
-        textSpeed.stroke = textCoins.stroke = textDistance.stroke = 'white';
+        textEnd = inGame.add.text(100, 170, 'Press "spacebar" to play again!');
+        textSpeed.stroke = textCoins.stroke = textDistance.stroke = textEnd.stroke = 'white';
         textSpeed.strokeThickness = textCoins.strokeThickness = textDistance.strokeThickness = 2;
-        textSpeed.fill = textCoins.fill = textDistance.fill = 'black';
+        textEnd.strokeThickness = 3;
+        textSpeed.fill = textCoins.fill = textDistance.fill = textEnd.fill = 'black';
         textSpeed.fontSize = textCoins.fontSize = textDistance.fontSize = 15;
 
         gameReset();
@@ -79,11 +82,11 @@ function inGame() {
 
         if (spacebar.isDown && player.body.touching.down) {
             player.body.velocity.y = -600;
-            var coin = coins.create(700, inGame.rnd.between(0, 268), 'coin');
+            var coin = coins.create(700, inGame.rnd.between(100, 268), 'coin');
             coin.animations.add('rotation', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
             coin.animations.play('rotation');
             var enemy = enemies.create(700, 230, 'enemy');
-            enemy.animations.add('left', [0, 1, 2, 3], 10, true);
+            enemy.animations.add('left', [0, 1, 2, 3], playerSpeed * 2, true);
             enemy.animations.play('left');
         }
 
@@ -122,11 +125,13 @@ function inGame() {
     function coinPickup(player, coin){
         coin.kill();
         coinsPicked++;
+        playerSpeed += 0.025;
     }
 
     function endGame(player, enemy) {
         player.animations.stop();
         spacebar.onDown.addOnce(gameReset);
+        textEnd.alpha = 1;
         playing = false;
     }
 
@@ -136,14 +141,15 @@ function inGame() {
         playerSpeed = 2;
         distance = coinsPicked = 0;
         player.animations.play('right');
+        textEnd.alpha = 0;
         playing = true;
         updateTexts();
     }
 
     function updateTexts() {
-        textSpeed.setText("Speed: " + playerSpeed.toFixed(1));
+        textSpeed.setText("Speed: " + (playerSpeed === 30 ? "max" : (playerSpeed*10).toFixed(0)));
         textCoins.setText("Coins: " + coinsPicked);
-        textDistance.setText("Distance: " + distance.toFixed(0));
+        textDistance.setText("Distance: " + (distance/10).toFixed(0));
     }
 
     return inGame;
