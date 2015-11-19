@@ -38,7 +38,7 @@ function inGame() {
         inGame.physics.arcade.enable(player);
         player.body.gravity.y = 1200;
         player.body.collideWorldBounds = true;
-        player.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], playerSpeed * 2, true);
+        player.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], playerSpeed * 1.75, true);
 
         ground = inGame.add.sprite(0, 300, 'ground');
         ground.alpha = 0.5;
@@ -48,25 +48,34 @@ function inGame() {
         spacebar = inGame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
         textSpeed = inGame.add.text(5, 10);
-        textCoins = inGame.add.text(5, 40);
-        textDistance = inGame.add.text(5, 70);
+        textCoins = inGame.add.text(5, 35);
+        textDistance = inGame.add.text(5, 60);
+        textSpeed.stroke = textCoins.stroke = textDistance.stroke = 'white';
+        textSpeed.strokeThickness = textCoins.strokeThickness = textDistance.strokeThickness = 2;
+        textSpeed.fill = textCoins.fill = textDistance.fill = 'black';
+        textSpeed.fontSize = textCoins.fontSize = textDistance.fontSize = 15;
 
         gameReset();
     };
 
     inGame.update = function () {
-        if (!playing) return;
+
+        inGame.physics.arcade.collide(ground, player);
+
+        if (!playing) {
+            return;
+        }
 
         distance += playerSpeed;
 
-        inGame.physics.arcade.collide(ground, player);
-        inGame.physics.arcade.collide(coins, player, coinPickup, null, this);
-        inGame.physics.arcade.collide(enemies, player);
+        inGame.physics.arcade.overlap(coins, player, coinPickup, null, this);
+        inGame.physics.arcade.overlap(enemies, player, endGame, null, this);
 
         backgrounds.forEach(backgroundScroll, this);
         coins.forEach(coinScroll, this);
         enemies.forEach(enemiesWalk, this);
-        player.animations.getAnimation('right').speed = playerSpeed * 1.5;
+
+        player.animations.getAnimation('right').speed = playerSpeed * 1.75;
 
         if (spacebar.isDown && player.body.touching.down) {
             player.body.velocity.y = -600;
@@ -105,13 +114,25 @@ function inGame() {
             enemy.kill();
         }
     }
+
+    function killEach(child) {
+        child.kill();
+    }
     
     function coinPickup(player, coin){
         coin.kill();
         coinsPicked++;
     }
 
+    function endGame(player, enemy) {
+        player.animations.stop();
+        spacebar.onDown.addOnce(gameReset);
+        playing = false;
+    }
+
     function gameReset() {
+        coins.forEach(killEach, this);
+        enemies.forEach(killEach, this);
         playerSpeed = 2;
         distance = coinsPicked = 0;
         player.animations.play('right');
@@ -120,9 +141,9 @@ function inGame() {
     }
 
     function updateTexts() {
-        textSpeed.setText(playerSpeed.toFixed(1));
-        textCoins.setText(coinsPicked);
-        textDistance.setText(distance.toFixed(0));
+        textSpeed.setText("Speed: " + playerSpeed.toFixed(1));
+        textCoins.setText("Coins: " + coinsPicked);
+        textDistance.setText("Distance: " + distance.toFixed(0));
     }
 
     return inGame;
