@@ -18,7 +18,7 @@ function inGame() {
     var inGame = new Phaser.State();
     var player, enemies, ground, coins, backgrounds,
     playerSpeed, distance, coinsPicked,
-    spacebar,
+    spacebarKey, leftKey, rightKey, upKey, aKey, dKey, wKey,
     textSpeed, textCoins, textDistance, textEnd,
     playing;
 
@@ -46,7 +46,13 @@ function inGame() {
         inGame.physics.arcade.enable(ground);
         ground.body.immovable = true;
 
-        spacebar = inGame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+        spacebarKey = inGame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
+        leftKey = inGame.input.keyboard.addKey(Phaser.KeyCode.LEFT);
+        rightKey = inGame.input.keyboard.addKey(Phaser.KeyCode.RIGHT);
+        upKey = inGame.input.keyboard.addKey(Phaser.KeyCode.UP);
+        aKey = inGame.input.keyboard.addKey(Phaser.KeyCode.A);
+        dKey = inGame.input.keyboard.addKey(Phaser.KeyCode.D);
+        wKey = inGame.input.keyboard.addKey(Phaser.KeyCode.W);
 
         textSpeed = inGame.add.text(5, 10);
         textCoins = inGame.add.text(5, 35);
@@ -78,9 +84,8 @@ function inGame() {
         coins.forEach(coinScroll, this);
         enemies.forEach(enemiesWalk, this);
 
-        player.animations.getAnimation('right').speed = playerSpeed * 1.75;
 
-        if (spacebar.isDown && player.body.touching.down) {
+        if ((spacebarKey.isDown || wKey.isDown || upKey.isDown) && player.body.touching.down) {
             player.body.velocity.y = -600;
             var coin = coins.create(700, inGame.rnd.between(100, 268), 'coin');
             coin.animations.add('rotation', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
@@ -88,6 +93,18 @@ function inGame() {
             var enemy = enemies.create(700, 230, 'enemy');
             enemy.animations.add('left', [0, 1, 2, 3], playerSpeed * 2, true);
             enemy.animations.play('left');
+        }
+
+        if (aKey.isDown || leftKey.isDown) {
+            player.animations.stop();
+            player.body.position.x -= playerSpeed;
+        } else if (dKey.isDown || rightKey.isDown) {
+            player.animations.getAnimation('right').speed = playerSpeed * 3.5;
+            player.animations.play('right');
+            player.body.position.x += playerSpeed;
+        } else {
+            player.animations.getAnimation('right').speed = playerSpeed * 1.75;
+            player.animations.play('right');
         }
 
         if (playerSpeed < 30) {
@@ -105,14 +122,14 @@ function inGame() {
     }
     
     function coinScroll(coin){
-        coin.body.velocity.x = playerSpeed*-100;
+        coin.body.position.x -= playerSpeed;
         if(coin.position.x < -1355){
             coin.kill();
         }
     }
     
     function enemiesWalk(enemy){
-        enemy.body.velocity.x = playerSpeed*-125;
+        enemy.body.position.x -= playerSpeed*1.25;
         if(enemy.position.x < -1355){
             enemy.kill();
         }
@@ -130,7 +147,7 @@ function inGame() {
 
     function endGame(player, enemy) {
         player.animations.stop();
-        spacebar.onDown.addOnce(gameReset);
+        spacebarKey.onDown.addOnce(gameReset);
         textEnd.alpha = 1;
         playing = false;
     }
@@ -140,6 +157,7 @@ function inGame() {
         enemies.forEach(killEach, this);
         playerSpeed = 2;
         distance = coinsPicked = 0;
+        player.animations.getAnimation('right').speed = playerSpeed * 1.75;
         player.animations.play('right');
         textEnd.alpha = 0;
         playing = true;
