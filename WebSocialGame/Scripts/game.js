@@ -1,4 +1,5 @@
 ﻿/// <reference path="phaser.js" />
+/// <reference path="states.js" />
 
 (function () {
     var game = new Phaser.Game(640, 360, Phaser.AUTO, '', { preload: preload, create: create});
