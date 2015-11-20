@@ -2,9 +2,18 @@
 
 function mainMenu() {
     var mainMenu = new Phaser.State();
+	var textHighDistance, textCoins, textName;
 
     mainMenu.create = function () {
+		mainMenu.add.sprite(0, 0, 'background');
         mainMenu.add.button(250, 130, 'play', playGame);
+		if(mainMenu.game.user.uid !== 0){
+			textName = mainMenu.add.text(5, 10, mainMenu.game.user.name);
+			textName.fill = 'white';
+		}
+		textCoins = mainMenu.add.text(5, 40, "Coins: " + mainMenu.game.user.coins);
+		textHighDistance = mainMenu.add.text(5, 70, "Highest distance: " + (mainMenu.game.user.highestDistance/10).toFixed(0));
+        textCoins.fill = textHighDistance.fill = 'white';
     }
 
     function playGame() {
@@ -40,11 +49,14 @@ function inGame() {
         player.body.collideWorldBounds = true;
         player.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], playerSpeed * 1.75, true);
         player.scale = new Phaser.Point(0.5, 0.5);
+		player.body.setSize(78, 120, 10);
 
         ground = inGame.add.sprite(0, 300, 'ground');
         ground.alpha = 0;
         inGame.physics.arcade.enable(ground);
         ground.body.immovable = true;
+		
+		inGame.input.addMoveCallback(moveHandler, this);
 
         escapeKey = inGame.input.keyboard.addKey(Phaser.KeyCode.ESC);
         spacebarKey = inGame.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
@@ -60,7 +72,7 @@ function inGame() {
         textSpeed = inGame.add.text(5, 10);
         textCoins = inGame.add.text(5, 35);
         textDistance = inGame.add.text(5, 60);
-        textEnd = inGame.add.text(100, 170, 'Press "spacebar" to play again!\nPress "escape" to go back to menu!');
+        textEnd = inGame.add.text(100, 170, 'Press "spacebar" or click to play again!\nPress "escape" to go back to menu!');
         textSpeed.stroke = textCoins.stroke = textDistance.stroke = textEnd.stroke = 'white';
         textSpeed.strokeThickness = textCoins.strokeThickness = textDistance.strokeThickness = 2;
         textEnd.strokeThickness = 3;
@@ -90,12 +102,8 @@ function inGame() {
 
         if ((spacebarKey.isDown || wKey.isDown || upKey.isDown) && player.body.touching.down) {
             player.body.velocity.y = -600;
-            var coin = coins.create(700, inGame.rnd.between(100, 268), 'coin');
-            coin.animations.add('rotation', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
-            coin.animations.play('rotation');
-            var enemy = enemies.create(700, 230, 'enemy');
-            enemy.animations.add('left', [0, 1, 2, 3], playerSpeed * 2, true);
-            enemy.animations.play('left');
+			spawnCoin(700, inGame.rnd.between(100, 268));
+			spawnEnemy(700+inGame.rnd.between(0, playerSpeed), 230);
         }
 
         if (aKey.isDown || leftKey.isDown) {
@@ -116,6 +124,12 @@ function inGame() {
 
         updateTexts();
     };
+	
+	inGame.render = function(){
+		// inGame.game.debug.body(player);
+        // coins.forEach(debugDraw, this);
+        // enemies.forEach(debugDraw, this);
+	}
 
     function backgroundScroll(background) {
         background.position.x -= playerSpeed;
@@ -141,18 +155,29 @@ function inGame() {
     function killEach(child) {
         child.kill();
     }
+	
+	function debugDraw(child){
+		inGame.game.debug.body(child);
+	}
     
     function coinPickup(player, coin){
         coin.kill();
         coinsPicked++;
-        playerSpeed += 0.025;
+        playerSpeed += 0.1;
     }
 
     function endGame(player, enemy) {
+		if(player.body.touching.down && enemy.body.touching.up){
+			enemy.kill();
+            player.body.velocity.y = -450;
+			return;
+		}
         player.alpha = 0.25;
         player.animations.stop();
         spacebarKey.onDown.addOnce(gameReset);
         textEnd.alpha = 1;
+		inGame.game.user.updateStats(coinsPicked, distance);
+		updateTexts();
         playing = false;
     }
 
@@ -171,9 +196,39 @@ function inGame() {
 
     function updateTexts() {
         textSpeed.setText("Speed: " + (playerSpeed === 30 ? "max" : (playerSpeed*10).toFixed(0)));
-        textCoins.setText("Coins: " + coinsPicked);
-        textDistance.setText("Distance: " + (distance/10).toFixed(0));
+        textCoins.setText("Coins: " + coinsPicked + (playing ? "" : "/"+inGame.game.user.highestCoins));
+        textDistance.setText("Distance: " + (distance/10).toFixed(0) + (playing ? "" : "/"+(inGame.game.user.highestDistance/10).toFixed(0)));
     }
+	
+	function moveHandler(pointer, x, y, onDown){
+		if(!playing) {
+			if(onDown){
+				gameReset();
+			}
+			return;
+		}
+		
+		player.position.x = pointer.worldX - 27;
+		
+		if(onDown && player.body.touching.down) {
+            player.body.velocity.y = -600;
+			spawnCoin(700, inGame.rnd.between(100, 268));
+			spawnEnemy(700+inGame.rnd.between(0, playerSpeed), 230);
+        }
+	}
+	
+	function spawnCoin(x, y){
+		var coin = coins.create(x, y, 'coin');
+		coin.animations.add('rotation', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
+		coin.animations.play('rotation');
+	}
+	
+	function spawnEnemy(x, y){
+		var enemy = enemies.create(x, y, 'enemy');
+		enemy.animations.add('left', [0, 1, 2, 3], playerSpeed * 2, true);
+		enemy.animations.play('left');
+		enemy.body.setSize(30, 60, 0, 5);
+	}
 
     return inGame;
 }
