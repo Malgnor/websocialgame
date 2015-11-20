@@ -7,14 +7,12 @@ function mainMenu() {
     mainMenu.create = function () {
         mainMenu.add.sprite(0, 0, 'background');
         mainMenu.add.button(250, 130, 'play', playGame);
-        if(mainMenu.game.user.uid !== 0){
-            textName = mainMenu.add.text(5, 10, mainMenu.game.user.name);
-            textName.fill = 'white';
-        }
+
+        textName = mainMenu.add.text(5, 10, mainMenu.game.user.name);
         textCoins = mainMenu.add.text(5, 40, "Coins: " + mainMenu.game.user.coins);
-        textHighDistance = mainMenu.add.text(5, 70, "Highest distance: " + (mainMenu.game.user.highestDistance/10).toFixed(0));
-        textCoins.fill = textHighDistance.fill = 'white';
-    }
+        textHighDistance = mainMenu.add.text(5, 70, "Highest distance: " + (mainMenu.game.user.highestDistance / 10).toFixed(0));
+        textCoins.fill = textName.fill = textHighDistance.fill = 'white';
+    };
 
     function playGame() {
         mainMenu.state.start('inGame');
@@ -143,11 +141,11 @@ function inGame() {
         updateTexts();
     };
     
-    inGame.render = function(){
+    inGame.render = function () {
         // inGame.game.debug.body(player);
         // coins.forEach(debugDraw, this);
         // enemies.forEach(debugDraw, this);
-    }
+    };
 
     function backgroundScroll(background) {
         background.position.x -= playerSpeed;

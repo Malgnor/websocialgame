@@ -25,28 +25,28 @@
 function User(){
     var self = this;
     this.uid = 0;
-    this.me = null;
+    this.name = "Guest";
     
     this.coins = 0;
-    this.spentCoins = 0
+    this.spentCoins = 0;
     this.totalCoins = 0;
     this.highestCoins = 0;
     
     this.highestDistance = 0;
     this.totalDistance = 0;
     
-    this.updateStats = function(coins, distance){
+    this.updateStats = function (coins, distance) {
         self.coins += coins;
         self.totalCoins += coins;
-        if(coins > self.highestCoins){
+        if (coins > self.highestCoins) {
             self.highestCoins = coins;
         }
-        
+
         self.totalDistance += distance;
-        if(distance > self.highestDistance){
+        if (distance > self.highestDistance) {
             self.highestDistance = distance;
         }
-    }
+    };
     
     return this;
 }
