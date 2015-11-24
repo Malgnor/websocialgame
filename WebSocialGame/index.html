@@ -22,5 +22,22 @@
         data-href="http://infiniterunner.bitballoon.com/" 
         data-layout="button_count">
     </div>
+    <input type="button" value="GET" onclick='$.ajax({
+    url: "api/Users"
+})
+  .done(function (msg) {
+      alert(msg);
+      console.log(msg);
+  });' />
+
+    <input type="button" value="POST" onclick='$.ajax({
+    method: "POST",
+    url: "api/Users",
+    data: { FBID: 123456789, name: "Teste", highestDistance: 123, highestCoins: 321 }
+})
+    .done(function (msg) {
+        alert("Data Saved: " + msg);
+        console.log(msg);
+    });' />
 </body>
 </html>
