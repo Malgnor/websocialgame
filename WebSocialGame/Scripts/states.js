@@ -1,18 +1,88 @@
 ﻿/// <reference path="phaser.js" />
 
+
+
 function mainMenu() {
     var mainMenu = new Phaser.State();
     var textHighDistance, textCoins, textName;
+    var usuario = {};
 
     mainMenu.create = function () {
         mainMenu.add.sprite(0, 0, 'background');
         mainMenu.add.button(250, 130, 'play', playGame);
+        //mainMenu.add.button(490, 323, 'compartilhar', compartilhar);
+        //mainMenu.add.button(0, 296, 'curta', curtir);
+        mainMenu.add.button(210, 284, 'invite', desafiar);
 
         textName = mainMenu.add.text(5, 10, mainMenu.game.user.name);
         textCoins = mainMenu.add.text(5, 40, "Coins: " + mainMenu.game.user.coins);
         textHighDistance = mainMenu.add.text(5, 70, "Highest distance: " + (mainMenu.game.user.highestDistance / 10).toFixed(0));
         textCoins.fill = textName.fill = textHighDistance.fill = 'white';
+
+        // INICIALIZA O FACEBOOK -----------------------------------------------
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '735977296534812',
+                xfbml: true,
+                version: 'v2.5'
+            });
+            FB.getLoginStatus(function (res) {
+                if (res.status === 'connected') {
+                    usuario.userId = res.authResponse.userID;
+                    $("#user-id").text('User Id: ' + usuario.userId);
+                }
+                else {
+                    FB.login(function (res) {
+                        if (res.authResponse) {
+                            usuario.userId = res.authResponse.userID;
+                            $("#user-id").text('User Id: ' + usuario.userId);
+                        }
+                    }, { scope: "user_friends" });
+                }
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        // TERMINA A INICIALIZAÇÃO DO FACEBOOK-------------------------------
     };
+
+    /* ---------------------------FUNÇÕES DO FACEBOOK---------------------------------*/
+    /*function curtir() {
+        FB.ui({
+            method: 'like',
+            href: 'http://infiniterunner.bitballoon.com/'
+        })
+    }
+    function compartilhar() {
+        FB.ui({
+            method: 'share',
+            href: 'http://infiniterunner.bitballoon.com/'
+        })
+    }*/
+
+    function desafiar() {
+        FB.api(
+            "/me/invitable_friends",
+            function (response) {
+                if (response && !response.error) {
+                    
+                }
+            }
+            );
+        FB.ui({
+            method: 'apprequests',
+            message: 'Vem tentar me derrotar!'
+        });
+    }
+
+    /* -------------------------------------------------------------------------------*/
 
     function playGame() {
         mainMenu.state.start('inGame');
@@ -53,7 +123,7 @@ function inGame() {
         ground.alpha = 0;
         inGame.physics.arcade.enable(ground);
         ground.body.immovable = true;
-        
+
         useTarget = false;
         inGame.input.addMoveCallback(moveHandler, this);
 
@@ -102,7 +172,7 @@ function inGame() {
         if ((spacebarKey.isDown || wKey.isDown || upKey.isDown) && player.body.touching.down) {
             player.body.velocity.y = -600;
             spawnCoin(700, inGame.rnd.between(100, 268));
-            spawnEnemy(700+inGame.rnd.between(0, playerSpeed), 230);
+            spawnEnemy(700 + inGame.rnd.between(0, playerSpeed), 230);
         }
 
         if (aKey.isDown || leftKey.isDown) {
@@ -140,7 +210,7 @@ function inGame() {
 
         updateTexts();
     };
-    
+
     inGame.render = function () {
         // inGame.game.debug.body(player);
         // coins.forEach(debugDraw, this);
@@ -150,20 +220,20 @@ function inGame() {
     function backgroundScroll(background) {
         background.position.x -= playerSpeed;
         if (background.position.x <= -1355) {
-            background.position.x += 1355*2;
+            background.position.x += 1355 * 2;
         }
     }
-    
-    function coinScroll(coin){
+
+    function coinScroll(coin) {
         coin.body.position.x -= playerSpeed;
-        if(coin.position.x < -1355){
+        if (coin.position.x < -1355) {
             coin.kill();
         }
     }
-    
-    function enemiesWalk(enemy){
-        enemy.body.position.x -= playerSpeed*1.25;
-        if(enemy.position.x < -1355){
+
+    function enemiesWalk(enemy) {
+        enemy.body.position.x -= playerSpeed * 1.25;
+        if (enemy.position.x < -1355) {
             enemy.kill();
         }
     }
@@ -171,19 +241,19 @@ function inGame() {
     function killEach(child) {
         child.kill();
     }
-    
-    function debugDraw(child){
+
+    function debugDraw(child) {
         inGame.game.debug.body(child);
     }
-    
-    function coinPickup(player, coin){
+
+    function coinPickup(player, coin) {
         coin.kill();
         coinsPicked++;
         playerSpeed += 0.1;
     }
 
     function endGame(player, enemy) {
-        if(player.body.touching.down && enemy.body.touching.up){
+        if (player.body.touching.down && enemy.body.touching.up) {
             enemy.kill();
             player.body.velocity.y = -450;
             return;
@@ -211,36 +281,36 @@ function inGame() {
     }
 
     function updateTexts() {
-        textSpeed.setText("Speed: " + (playerSpeed === 30 ? "max" : (playerSpeed*10).toFixed(0)));
-        textCoins.setText("Coins: " + coinsPicked + (playing ? "" : "/"+inGame.game.user.highestCoins));
-        textDistance.setText("Distance: " + (distance/10).toFixed(0) + (playing ? "" : "/"+(inGame.game.user.highestDistance/10).toFixed(0)));
+        textSpeed.setText("Speed: " + (playerSpeed === 30 ? "max" : (playerSpeed * 10).toFixed(0)));
+        textCoins.setText("Coins: " + coinsPicked + (playing ? "" : "/" + inGame.game.user.highestCoins));
+        textDistance.setText("Distance: " + (distance / 10).toFixed(0) + (playing ? "" : "/" + (inGame.game.user.highestDistance / 10).toFixed(0)));
     }
-    
-    function moveHandler(pointer, x, y, onDown){
-        if(!playing) {
-            if(onDown){
+
+    function moveHandler(pointer, x, y, onDown) {
+        if (!playing) {
+            if (onDown) {
                 gameReset();
             }
             return;
         }
-        
+
         targetX = pointer.worldX - 27;
         useTarget = true;
-        
-        if(onDown && player.body.touching.down) {
+
+        if (onDown && player.body.touching.down) {
             player.body.velocity.y = -600;
             spawnCoin(700, inGame.rnd.between(100, 268));
-            spawnEnemy(700+inGame.rnd.between(0, playerSpeed), 230);
+            spawnEnemy(700 + inGame.rnd.between(0, playerSpeed), 230);
         }
     }
-    
-    function spawnCoin(x, y){
+
+    function spawnCoin(x, y) {
         var coin = coins.create(x, y, 'coin');
         coin.animations.add('rotation', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
         coin.animations.play('rotation');
     }
-    
-    function spawnEnemy(x, y){
+
+    function spawnEnemy(x, y) {
         var enemy = enemies.create(x, y, 'enemy');
         enemy.animations.add('left', [0, 1, 2, 3], playerSpeed * 2, true);
         enemy.animations.play('left');
