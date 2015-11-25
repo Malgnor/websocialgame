@@ -31,6 +31,7 @@ function mainMenu() {
                 if (res.status === 'connected') {
                     mainMenu.game.user.FBID = res.authResponse.userID;
                     mainMenu.game.user.loadMe();
+                    getName();
                     //console.log(res);
                     //console.log(mainMenu.game.user);
                 }
@@ -39,6 +40,7 @@ function mainMenu() {
                         if (res.authResponse) {
                             mainMenu.game.user.FBID = res.authResponse.userID;
                             mainMenu.game.user.loadMe();
+                            getName();
                             //console.log(res);
                             //console.log(mainMenu.game.user);
                         }
@@ -92,6 +94,16 @@ function mainMenu() {
             message: 'Vem tentar me derrotar!'
         });
     }
+
+    function getName() {
+        FB.api('/me', { fields: 'name' }, function (response) {
+            if (!response.error) {
+                mainMenu.game.user.Name = response.name;
+            } else {
+                console.log(response);
+            }
+        });
+    };
 
     /* -------------------------------------------------------------------------------*/
 

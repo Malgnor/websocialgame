@@ -72,7 +72,7 @@
             //console.log("Save");
             saveUser({UserID: self.UserID,
                 FBID: self.FBID,
-                Name: self.Name = "Guest",
+                Name: self.Name,
                 Coins: self.Coins,
                 TotalCoins: self.TotalCoins,
                 HighestCoins: self.HighestCoins,
@@ -87,7 +87,7 @@
             //console.log(loadedUser);
             self.UserID = loadedUser.UserID;
             self.FBID = loadedUser.FBID;
-            self.Name = loadedUser.Name;
+            //self.Name = loadedUser.Name;
 
             self.Coins = loadedUser.Coins;
             //self.spentCoins = loadedUser.spentCoins;
