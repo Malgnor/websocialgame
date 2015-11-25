@@ -19,6 +19,7 @@
 
     function create() {
         game.user = user;
+        game.topFive = getTopFive;
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.state.add("inGame", inGame());
         game.state.add("mainMenu", mainMenu(), true);
@@ -143,9 +144,22 @@
         }).error(ajaxError);
     };
 
+    function getTopFive() {
+        $.ajax({ url: "topFive" }).done(function (response) {
+            var message = "Top 5:\n";
+            for (var i = 0; i < response.length; i++) {
+                message += (1+i) + " - Name: " + response[i].Name
+                    + "  Distance: " + response[i].HighestDistance
+                    + "  Coins: " + response[i].HighestCoins
+                    + "  Score: " + response[i].HighestScore + "\n";
+            }
+            alert(message);
+        }).error(ajaxError);
+    }
+
     function ajaxError(msg) {
         console.log(msg);
-    }
+    };
 
 }());
 

@@ -9,6 +9,7 @@ function mainMenu() {
     mainMenu.create = function () {
         mainMenu.add.sprite(0, 0, 'background');
         mainMenu.add.button(250, 130, 'play', playGame);
+        mainMenu.add.button(0, 0, 'play', mainMenu.game.topFive);
         //mainMenu.add.button(490, 323, 'compartilhar', compartilhar);
         //mainMenu.add.button(0, 296, 'curta', curtir);
         mainMenu.add.button(210, 284, 'invite', desafiar);

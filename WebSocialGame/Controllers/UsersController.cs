@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -25,6 +26,24 @@ namespace WebSocialGame.Controllers {
             }
 
             return Ok(user);
+        }
+
+        [ResponseType(typeof(List<User>))]
+        [Route("topFive")]
+        public async Task<IHttpActionResult> GetTopFive()
+        {
+            List<User> users = await db.Users.ToListAsync();
+            users.Sort(delegate(User user1, User user2)
+            {
+                return user2.HighestScore.CompareTo(user1.HighestScore);
+            });
+            int size = users.Count >= 5 ? 5 : users.Count;
+            List<User> top = new List<User>(size);
+            for (int i = 0; i < size; i++)
+            {
+                top.Add(users[i]);
+            }
+            return Ok(top);
         }
 
         [ResponseType(typeof(User))]
