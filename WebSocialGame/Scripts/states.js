@@ -1,23 +1,24 @@
 ﻿/// <reference path="phaser.js" />
 
-
-
 function mainMenu() {
     var mainMenu = new Phaser.State();
     var textHighDistance, textCoins, textName;
 
     mainMenu.create = function () {
-        mainMenu.add.sprite(0, 0, 'background');
+        mainMenu.add.sprite(0, 0, 'menuBackground');
         mainMenu.add.button(250, 130, 'play', playGame);
-        mainMenu.add.button(0, 0, 'play', mainMenu.game.topFive);
+        //mainMenu.add.button(0, 0, 'play', mainMenu.game.topFive);
         //mainMenu.add.button(490, 323, 'compartilhar', compartilhar);
         //mainMenu.add.button(0, 296, 'curta', curtir);
         mainMenu.add.button(210, 284, 'invite', desafiar);
+        mainMenu.add.button(570, 5, 'crown', mainMenu.game.topFive);
 
         textName = mainMenu.add.text(5, 10, mainMenu.game.user.Name);
         textCoins = mainMenu.add.text(5, 40, "Coins: " + mainMenu.game.user.Coins);
         textHighDistance = mainMenu.add.text(5, 70, "Highest distance: " + (mainMenu.game.user.HighestDistance / 10).toFixed(0));
         textCoins.fill = textName.fill = textHighDistance.fill = 'white';
+        textCoins.stroke = textName.stroke = textHighDistance.stroke = 'black';
+        textCoins.strokeThickness = textName.strokeThickness = textHighDistance.strokeThickness = 2;
 
         // INICIALIZA O FACEBOOK -----------------------------------------------
         window.fbAsyncInit = function () {
@@ -82,7 +83,7 @@ function mainMenu() {
             "/me/invitable_friends",
             function (response) {
                 if (response && !response.error) {
-                    
+
                 }
             }
             );
@@ -99,7 +100,42 @@ function mainMenu() {
     }
 
     return mainMenu;
-}
+};
+
+function gameOver() {
+    var gameOver = new Phaser.State();
+    var textHighDistance, textCoins, textName;
+
+    gameOver.create = function () {
+        gameOver.add.sprite(0, 0, 'gameOver');
+        gameOver.add.button(150, 130, 'play', playGame);
+        gameOver.add.button(350, 130, 'back', backToMenu);
+        gameOver.add.button(550, 5, 'crown', gameOver.game.topFive);
+
+        textName = gameOver.add.text(15, 200, gameOver.game.user.Name);
+        textCoins = gameOver.add.text(15, 240, "Coins: " + gameOver.game.user.Coins);
+        textHighDistance = gameOver.add.text(15, 270, "Highest distance: " + (gameOver.game.user.HighestDistance / 10).toFixed(0));
+        textCoins.fill = textName.fill = textHighDistance.fill = 'black';
+        textCoins.stroke = textName.stroke = textHighDistance.stroke = 'white';
+        textCoins.strokeThickness = textName.strokeThickness = textHighDistance.strokeThickness = 3;
+    };
+
+    gameOver.update = function () {
+        textName.setText(gameOver.game.user.Name);
+        textCoins.setText("Coins: " + gameOver.game.user.Coins);
+        textHighDistance.setText("Highest distance: " + (gameOver.game.user.HighestDistance / 10).toFixed(0));
+    };
+
+    function playGame() {
+        gameOver.state.start('inGame');
+    };
+
+    function backToMenu() {
+        gameOver.state.start('mainMenu');
+    };
+
+    return gameOver;
+};
 
 function inGame() {
     var inGame = new Phaser.State();
@@ -277,6 +313,7 @@ function inGame() {
         inGame.game.user.saveMe();
         updateTexts();
         playing = false;
+        inGame.state.start("gameOver");
     }
 
     function gameReset() {
@@ -330,4 +367,4 @@ function inGame() {
     }
 
     return inGame;
-}
+};
