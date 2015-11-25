@@ -5,7 +5,6 @@
 function mainMenu() {
     var mainMenu = new Phaser.State();
     var textHighDistance, textCoins, textName;
-    var usuario = {};
 
     mainMenu.create = function () {
         mainMenu.add.sprite(0, 0, 'background');
@@ -28,14 +27,18 @@ function mainMenu() {
             });
             FB.getLoginStatus(function (res) {
                 if (res.status === 'connected') {
-                    usuario.userId = res.authResponse.userID;
-                    $("#user-id").text('User Id: ' + usuario.userId);
+                    mainMenu.game.user.fBID = res.authResponse.userID;
+                    mainMenu.game.user.load();
+                    console.log(res);
+                    console.log(mainMenu.game.user);
                 }
                 else {
                     FB.login(function (res) {
                         if (res.authResponse) {
-                            usuario.userId = res.authResponse.userID;
-                            $("#user-id").text('User Id: ' + usuario.userId);
+                            mainMenu.game.user.fBID = res.authResponse.userID;
+                            mainMenu.game.user.load();
+                            console.log(res);
+                            console.log(mainMenu.game.user);
                         }
                     }, { scope: "user_friends" });
                 }
@@ -262,7 +265,9 @@ function inGame() {
         player.animations.stop();
         spacebarKey.onDown.addOnce(gameReset);
         textEnd.alpha = 1;
-        inGame.game.user.updateStats(coinsPicked, distance);
+        inGame.game.user.updateStats(coinsPicked, distance, 10 * coinsPicked + distance);
+        console.log("EndGame");
+        inGame.game.user.save();
         updateTexts();
         playing = false;
     }

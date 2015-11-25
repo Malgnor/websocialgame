@@ -27,6 +27,23 @@ namespace WebSocialGame.Controllers {
             return Ok(user);
         }
 
+        [ResponseType(typeof(User))]
+        [Route("getFB/{id}")]
+        public async Task<IHttpActionResult> GetFb(int id) {
+            User user = await db.Users.Where(e => e.FBID == id).SingleOrDefaultAsync();
+            if(user == null) {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
+        [ResponseType(typeof(bool))]
+        [Route("existsFB/{id}")]
+        public async Task<IHttpActionResult> GetExistsFb(int id) {
+            return Ok(UserFBExists(id));
+        }
+
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutUser(int id, User user) {
@@ -66,20 +83,6 @@ namespace WebSocialGame.Controllers {
             return CreatedAtRoute("DefaultApi", new { id = user.UserID }, user);
         }
 
-        // DELETE: api/Users/5
-        [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> DeleteUser(int id) {
-            User user = await db.Users.FindAsync(id);
-            if(user == null) {
-                return NotFound();
-            }
-
-            db.Users.Remove(user);
-            await db.SaveChangesAsync();
-
-            return Ok(user);
-        }
-
         protected override void Dispose(bool disposing) {
             if(disposing) {
                 db.Dispose();
@@ -89,6 +92,10 @@ namespace WebSocialGame.Controllers {
 
         private bool UserExists(int id) {
             return db.Users.Count(e => e.UserID == id) > 0;
+        }
+
+        private bool UserFBExists(int id) {
+            return db.Users.Count(e => e.FBID == id) > 0;
         }
     }
 }
