@@ -6,23 +6,7 @@
     var user = new User();
 
     function preload() {
-        game.load.image('menuBackground', 'Images/menu.jpg');
-        game.load.image('background', 'Images/fase01R.png');
-        game.load.image('gameOver', 'Images/gameOver.jpg');
-        game.load.image('ground', 'Images/ground.png');
-        game.load.image('play', 'Images/play.png');
-        game.load.image('back', 'Images/back.png');
-        game.load.image('compartilhar', 'Images/compart.png');
-        game.load.image('curta', 'Images/curtir.png');
-        game.load.image('invite', 'Images/invite.png');
-        game.load.image('greenRune', 'Images/extraLife.png');
-        game.load.image('purpleRune', 'Images/doubleCoin.png');
-        game.load.image('redRune', 'Images/invulnerability.png');
-        game.load.image('blueRune', 'Images/magnet.png');
-        game.load.image('crown', 'Images/crown.png');
-        game.load.spritesheet('enemy', 'Images/inimigo.png', 40, 70);
-        game.load.spritesheet('coin', 'Images/moeda.png', 32, 32);
-        game.load.spritesheet('player', 'Images/scott.png', 108, 140);
+        game.load.image('loading', 'Images/loading.png');
     };
 
     function create() {
@@ -31,7 +15,8 @@
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.state.add("inGame", inGame());
         game.state.add("gameOver", gameOver());
-        game.state.add("mainMenu", mainMenu(), true);
+        game.state.add("mainMenu", mainMenu());
+        game.state.add("preloader", preloadState(), true);
     };
 
     function User() {

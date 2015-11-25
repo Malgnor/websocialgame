@@ -1,8 +1,46 @@
 ﻿/// <reference path="phaser.js" />
 
+function preloadState(){
+    var preloader = new Phaser.State();
+
+    preloader.preload = function () {
+        preloader.load.setPreloadSprite(preloader.add.sprite(100, 100, 'loading'));
+        preloader.load.image('menuBackground', 'Images/menu.jpg');
+        preloader.load.image('menuBackground', 'Images/menu.jpg');
+        preloader.load.image('background', 'Images/fase01R.png');
+        preloader.load.image('gameOver', 'Images/gameOver.jpg');
+        preloader.load.image('ground', 'Images/ground.png');
+        preloader.load.image('play', 'Images/play.png');
+        preloader.load.image('back', 'Images/back.png');
+        preloader.load.image('compartilhar', 'Images/compart.png');
+        preloader.load.image('curta', 'Images/curtir.png');
+        preloader.load.image('invite', 'Images/invite.png');
+        preloader.load.image('greenRune', 'Images/extraLife.png');
+        preloader.load.image('purpleRune', 'Images/doubleCoin.png');
+        preloader.load.image('redRune', 'Images/invulnerability.png');
+        preloader.load.image('blueRune', 'Images/magnet.png');
+        preloader.load.image('crown', 'Images/crown.png');
+        preloader.load.spritesheet('enemy', 'Images/inimigo.png', 40, 70);
+        preloader.load.spritesheet('coin', 'Images/moeda.png', 32, 32);
+        preloader.load.spritesheet('player', 'Images/scott.png', 108, 140);
+        preloader.load.audio("musicMenu", 'Sounds/musicaMenu.mp3');
+        preloader.load.audio("musicGame", 'Sounds/musicaFase.mp3');
+        preloader.load.audio("jumpSfx", 'Sounds/jumpEffect.mp3');
+        preloader.load.audio("gameOverSfx", 'Sounds/gameOverEffect.mp3');
+        preloader.load.audio("coinSfx", 'Sounds/coinEffect.mp3');
+    };
+
+    preloader.create = function () {
+        preloader.state.start('mainMenu');
+    }
+
+    return preloader;
+};
+
 function mainMenu() {
     var mainMenu = new Phaser.State();
-    var textHighDistance, textCoins, textName;
+    var textHighDistance, textCoins, textName,
+        music;
 
     mainMenu.create = function () {
         mainMenu.add.sprite(0, 0, 'menuBackground');
@@ -12,7 +50,8 @@ function mainMenu() {
         //mainMenu.add.button(0, 296, 'curta', curtir);
         mainMenu.add.button(210, 284, 'invite', desafiar);
         mainMenu.add.button(570, 5, 'crown', mainMenu.game.topFive);
-
+        music = mainMenu.add.audio('musicMenu', 0.1, true);
+        music.play();
         textName = mainMenu.add.text(5, 10, mainMenu.game.user.Name);
         textCoins = mainMenu.add.text(5, 40, "Coins: " + mainMenu.game.user.Coins);
         textHighDistance = mainMenu.add.text(5, 70, "Highest distance: " + (mainMenu.game.user.HighestDistance / 10).toFixed(0));
@@ -66,6 +105,10 @@ function mainMenu() {
         textHighDistance.setText("Highest distance: " + (mainMenu.game.user.HighestDistance / 10).toFixed(0));
     };
 
+    mainMenu.shutdown = function () {
+        music.stop();
+    }
+
     /* ---------------------------FUNÇÕES DO FACEBOOK---------------------------------*/
     /*function curtir() {
         FB.ui({
@@ -116,13 +159,16 @@ function mainMenu() {
 
 function gameOver() {
     var gameOver = new Phaser.State();
-    var textHighDistance, textCoins, textName;
+    var textHighDistance, textCoins, textName,
+        sfx;
 
     gameOver.create = function () {
         gameOver.add.sprite(0, 0, 'gameOver');
         gameOver.add.button(150, 130, 'play', playGame);
         gameOver.add.button(350, 130, 'back', backToMenu);
         gameOver.add.button(550, 5, 'crown', gameOver.game.topFive);
+        sfx = gameOver.add.audio('gameOverSfx', 0.1);
+        sfx.play();
 
         textName = gameOver.add.text(15, 200, gameOver.game.user.Name);
         textCoins = gameOver.add.text(15, 240, "Coins: " + gameOver.game.user.Coins);
@@ -155,9 +201,19 @@ function inGame() {
     playerSpeed, distance, coinsPicked,
     escapeKey, spacebarKey, leftKey, rightKey, upKey, aKey, dKey, wKey,
     textSpeed, textCoins, textDistance, textEnd,
-    playing, targetX, useTarget;
+    playing, targetX, useTarget,
+    coinSfx, jumpSfx, music;
+
+    inGame.shutdown = function () {
+        music.stop();
+    }
 
     inGame.create = function () {
+
+        coinSfx = inGame.add.audio('coinSfx', 0.1);
+        jumpSfx = inGame.add.audio('jumpSfx', 0.1);
+        music = inGame.add.audio('musicGame', 0.1, true);
+        music.play();
 
         backgrounds = inGame.add.group();
         backgrounds.create(0, 0, 'background');
