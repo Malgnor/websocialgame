@@ -59,13 +59,22 @@
 
         this.saveMe = function () {
             if (self.FBID === 0) return;
-            console.log("Save");
-            saveUser(self);
+            //console.log("Save");
+            saveUser({UserID: self.UserID,
+                FBID: self.FBID,
+                Name: self.Name = "Guest",
+                Coins: self.Coins,
+                TotalCoins: self.TotalCoins,
+                HighestCoins: self.HighestCoins,
+
+                HighestDistance: self.HighestDistance,
+                TotalDistance: self.TotalDistance,
+                HighestScore: self.HighestScore});
         };
 
         var onLoadMe = function (loadedUser) {
-            console.log("onLoadMe");
-            console.log(loadedUser);
+            //console.log("onLoadMe");
+            //console.log(loadedUser);
             self.UserID = loadedUser.UserID;
             self.FBID = loadedUser.FBID;
             self.Name = loadedUser.Name;
@@ -79,11 +88,11 @@
             self.TotalDistance = loadedUser.TotalDistance;
 
             self.HighestScore = loadedUser.HighestScore;
-            console.log(self);
+            //console.log(self);
         };
 
         this.loadMe = function () {
-            console.log("loadMe");
+            //console.log("loadMe");
             loadUser(self.FBID, onLoadMe);
         };
 
@@ -91,44 +100,43 @@
     };
 
     function saveUser(userToSave) {
-        console.log("saveUser");
-        console.log(userToSave);
+        //console.log("saveUser");
+        //console.log(userToSave);
         $.ajax({ url: "existsFB/" + userToSave.FBID }).done(function (response) {
-            console.log("existsFB/" + userToSave.FBID);
-            console.log(response);
+            //console.log("existsFB/" + userToSave.FBID);
+            //console.log(response);
             if (response) {
-                console.log(userToSave);
+                //console.log(userToSave);
                 $.ajax({
                     method: "PUT",
                     url: "api/Users/" + userToSave.UserID,
                     data: userToSave
                 }).done(function (msg) {
-                    console.log("PUT/api/Users/" + userToSave.UserID);
+                    //console.log("PUT/api/Users/" + userToSave.UserID);
                 }).error(ajaxError);
             } else {
-                console.log(userToSave);
+                //console.log(userToSave);
                 $.ajax({
                     method: "POST",
                     url: "api/Users",
                     data: userToSave
                 }).done(function (userSaved) {
                     user.UserID = userSaved.UserID;
-                    console.log("POST/api/Users");
-                    console.log(userSaved);
-                    console.log(user);
+                    //console.log("POST/api/Users");
+                    //console.log(userSaved);
+                    //console.log(user);
                 }).error(ajaxError);
             }
         }).error(ajaxError);
     };
 
     function loadUser(id, callback) {
-
         $.ajax({ url: "existsFB/" + id }).done(function (response) {
-            console.log("existsFB/" + id);
-            console.log(response);
+            //console.log("existsFB/" + id);
+            //console.log(response);
             if (response) {
                 $.ajax({ url: "getFb/" + id }).done(function (userLoaded) {
-                    console.log("getFb/" + id);
+                    //console.log("getFb/" + id);
                     callback(userLoaded);
                 }).error(ajaxError);
             }

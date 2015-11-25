@@ -29,16 +29,16 @@ function mainMenu() {
                 if (res.status === 'connected') {
                     mainMenu.game.user.FBID = res.authResponse.userID;
                     mainMenu.game.user.loadMe();
-                    console.log(res);
-                    console.log(mainMenu.game.user);
+                    //console.log(res);
+                    //console.log(mainMenu.game.user);
                 }
                 else {
                     FB.login(function (res) {
                         if (res.authResponse) {
                             mainMenu.game.user.FBID = res.authResponse.userID;
                             mainMenu.game.user.loadMe();
-                            console.log(res);
-                            console.log(mainMenu.game.user);
+                            //console.log(res);
+                            //console.log(mainMenu.game.user);
                         }
                     }, { scope: "user_friends" });
                 }
@@ -272,7 +272,7 @@ function inGame() {
         spacebarKey.onDown.addOnce(gameReset);
         textEnd.alpha = 1;
         inGame.game.user.updateStats(coinsPicked, distance, 10 * coinsPicked + distance);
-        console.log("EndGame");
+        //console.log("EndGame");
         inGame.game.user.saveMe();
         updateTexts();
         playing = false;
