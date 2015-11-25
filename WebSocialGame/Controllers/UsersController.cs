@@ -1,35 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using WebSocialGame.Models;
 
-namespace WebSocialGame.Controllers
-{
-    public class UsersController : ApiController
-    {
+namespace WebSocialGame.Controllers {
+    public class UsersController : ApiController {
         private WebSocialGameContext db = new WebSocialGameContext();
 
         // GET: api/Users
-        public IQueryable<User> GetUsers()
-        {
+        public IQueryable<User> GetUsers() {
             return db.Users;
         }
 
         // GET: api/Users/5
         [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> GetUser(int id)
-        {
+        public async Task<IHttpActionResult> GetUser(int id) {
             User user = await db.Users.FindAsync(id);
-            if (user == null)
-            {
+            if(user == null) {
                 return NotFound();
             }
 
@@ -38,32 +29,23 @@ namespace WebSocialGame.Controllers
 
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutUser(int id, User user)
-        {
-            if (!ModelState.IsValid)
-            {
+        public async Task<IHttpActionResult> PutUser(int id, User user) {
+            if(!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            if (id != user.UserID)
-            {
+            if(id != user.UserID) {
                 return BadRequest();
             }
 
             db.Entry(user).State = EntityState.Modified;
 
-            try
-            {
+            try {
                 await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
+            } catch(DbUpdateConcurrencyException) {
+                if(!UserExists(id)) {
                     return NotFound();
-                }
-                else
-                {
+                } else {
                     throw;
                 }
             }
@@ -73,10 +55,8 @@ namespace WebSocialGame.Controllers
 
         // POST: api/Users
         [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> PostUser(User user)
-        {
-            if (!ModelState.IsValid)
-            {
+        public async Task<IHttpActionResult> PostUser(User user) {
+            if(!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
@@ -88,11 +68,9 @@ namespace WebSocialGame.Controllers
 
         // DELETE: api/Users/5
         [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> DeleteUser(int id)
-        {
+        public async Task<IHttpActionResult> DeleteUser(int id) {
             User user = await db.Users.FindAsync(id);
-            if (user == null)
-            {
+            if(user == null) {
                 return NotFound();
             }
 
@@ -102,17 +80,14 @@ namespace WebSocialGame.Controllers
             return Ok(user);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
+        protected override void Dispose(bool disposing) {
+            if(disposing) {
                 db.Dispose();
             }
             base.Dispose(disposing);
         }
 
-        private bool UserExists(int id)
-        {
+        private bool UserExists(int id) {
             return db.Users.Count(e => e.UserID == id) > 0;
         }
     }

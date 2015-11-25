@@ -26,7 +26,8 @@
     url: "api/Users"
 })
   .done(function (msg) {
-      alert(msg);
+      console.log(msg);
+  }).error(function (msg) {
       console.log(msg);
   });' />
 
@@ -36,7 +37,8 @@
     data: { FBID: 123456789, name: "Teste", highestDistance: 123, highestCoins: 321 }
 })
     .done(function (msg) {
-        alert("Data Saved: " + msg);
+        console.log(msg);
+    }).e(function (msg) {
         console.log(msg);
     });' />
 </body>

@@ -27,7 +27,8 @@
 
 function User(){
     var self = this;
-    this.uid = 0;
+    this.userID = 0;
+    this.fBID = 0;
     this.name = "Guest";
     
     this.coins = 0;
@@ -37,8 +38,10 @@ function User(){
     
     this.highestDistance = 0;
     this.totalDistance = 0;
+
+    this.highestScore = 0;
     
-    this.updateStats = function (coins, distance) {
+    this.updateStats = function (coins, distance, score) {
         self.coins += coins;
         self.totalCoins += coins;
         if (coins > self.highestCoins) {
@@ -48,6 +51,10 @@ function User(){
         self.totalDistance += distance;
         if (distance > self.highestDistance) {
             self.highestDistance = distance;
+        }
+
+        if (score > self.highestScore) {
+            self.highestScore = score;
         }
     };
     

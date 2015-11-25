@@ -109,12 +109,29 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511242115260_InitialCreate.cs" />
+    <Compile Include="Migrations\201511242115260_InitialCreate.Designer.cs">
+      <DependentUpon>201511242115260_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511251636263_UpdatedUser.cs" />
+    <Compile Include="Migrations\201511251636263_UpdatedUser.Designer.cs">
+      <DependentUpon>201511251636263_UpdatedUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\WebSocialGameContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201511242115260_InitialCreate.resx">
+      <DependentUpon>201511242115260_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511251636263_UpdatedUser.resx">
+      <DependentUpon>201511251636263_UpdatedUser.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
