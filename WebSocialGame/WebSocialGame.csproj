@@ -81,6 +81,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Images\compart.png" />
+    <Content Include="Images\curtir.png" />
+    <Content Include="Images\doubleCoin.png" />
+    <Content Include="Images\extraLife.png" />
+    <Content Include="Images\gameOver.jpg" />
+    <Content Include="Images\ground.png" />
+    <Content Include="Images\invite.png" />
+    <Content Include="Images\invulnerability.png" />
+    <Content Include="Images\magnet.png" />
+    <Content Include="Images\menu.jpg" />
     <Content Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -100,6 +110,11 @@
     <Content Include="Scripts\phaser.js" />
     <Content Include="Scripts\phaser.min.js" />
     <Content Include="Scripts\states.js" />
+    <Content Include="Sounds\coinEffect.mp3" />
+    <Content Include="Sounds\gameOverEffect.mp3" />
+    <Content Include="Sounds\jumpEffect.mp3" />
+    <Content Include="Sounds\musicaFase.mp3" />
+    <Content Include="Sounds\musicaMenu.mp3" />
     <Content Include="Styles\index.css" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -117,6 +132,10 @@
     <Compile Include="Migrations\201511251636263_UpdatedUser.Designer.cs">
       <DependentUpon>201511251636263_UpdatedUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511251815446_FBIDtoLong.cs" />
+    <Compile Include="Migrations\201511251815446_FBIDtoLong.Designer.cs">
+      <DependentUpon>201511251815446_FBIDtoLong.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\WebSocialGameContext.cs" />
@@ -131,6 +150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511251636263_UpdatedUser.resx">
       <DependentUpon>201511251636263_UpdatedUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511251815446_FBIDtoLong.resx">
+      <DependentUpon>201511251815446_FBIDtoLong.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

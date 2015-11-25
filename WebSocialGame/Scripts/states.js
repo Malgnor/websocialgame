@@ -13,9 +13,9 @@ function mainMenu() {
         //mainMenu.add.button(0, 296, 'curta', curtir);
         mainMenu.add.button(210, 284, 'invite', desafiar);
 
-        textName = mainMenu.add.text(5, 10, mainMenu.game.user.name);
-        textCoins = mainMenu.add.text(5, 40, "Coins: " + mainMenu.game.user.coins);
-        textHighDistance = mainMenu.add.text(5, 70, "Highest distance: " + (mainMenu.game.user.highestDistance / 10).toFixed(0));
+        textName = mainMenu.add.text(5, 10, mainMenu.game.user.Name);
+        textCoins = mainMenu.add.text(5, 40, "Coins: " + mainMenu.game.user.Coins);
+        textHighDistance = mainMenu.add.text(5, 70, "Highest distance: " + (mainMenu.game.user.HighestDistance / 10).toFixed(0));
         textCoins.fill = textName.fill = textHighDistance.fill = 'white';
 
         // INICIALIZA O FACEBOOK -----------------------------------------------
@@ -27,16 +27,16 @@ function mainMenu() {
             });
             FB.getLoginStatus(function (res) {
                 if (res.status === 'connected') {
-                    mainMenu.game.user.fBID = res.authResponse.userID;
-                    mainMenu.game.user.load();
+                    mainMenu.game.user.FBID = res.authResponse.userID;
+                    mainMenu.game.user.loadMe();
                     console.log(res);
                     console.log(mainMenu.game.user);
                 }
                 else {
                     FB.login(function (res) {
                         if (res.authResponse) {
-                            mainMenu.game.user.fBID = res.authResponse.userID;
-                            mainMenu.game.user.load();
+                            mainMenu.game.user.FBID = res.authResponse.userID;
+                            mainMenu.game.user.loadMe();
                             console.log(res);
                             console.log(mainMenu.game.user);
                         }
@@ -54,6 +54,12 @@ function mainMenu() {
         }(document, 'script', 'facebook-jssdk'));
 
         // TERMINA A INICIALIZAÇÃO DO FACEBOOK-------------------------------
+    };
+
+    mainMenu.update = function () {
+        textName.setText(mainMenu.game.user.Name);
+        textCoins.setText("Coins: " + mainMenu.game.user.Coins);
+        textHighDistance.setText("Highest distance: " + (mainMenu.game.user.HighestDistance / 10).toFixed(0));
     };
 
     /* ---------------------------FUNÇÕES DO FACEBOOK---------------------------------*/
@@ -96,7 +102,7 @@ function mainMenu() {
 
 function inGame() {
     var inGame = new Phaser.State();
-    var player, enemies, ground, coins, backgrounds,
+    var player, enemies, ground, Coins, backgrounds,
     playerSpeed, distance, coinsPicked,
     escapeKey, spacebarKey, leftKey, rightKey, upKey, aKey, dKey, wKey,
     textSpeed, textCoins, textDistance, textEnd,
@@ -108,8 +114,8 @@ function inGame() {
         backgrounds.create(0, 0, 'background');
         backgrounds.create(1355, 0, 'background');
 
-        coins = inGame.add.group();
-        coins.enableBody = true;
+        Coins = inGame.add.group();
+        Coins.enableBody = true;
 
         enemies = inGame.add.group();
         enemies.enableBody = true;
@@ -164,11 +170,11 @@ function inGame() {
 
         distance += playerSpeed;
 
-        inGame.physics.arcade.overlap(coins, player, coinPickup, null, this);
+        inGame.physics.arcade.overlap(Coins, player, coinPickup, null, this);
         inGame.physics.arcade.overlap(enemies, player, endGame, null, this);
 
         backgrounds.forEach(backgroundScroll, this);
-        coins.forEach(coinScroll, this);
+        Coins.forEach(coinScroll, this);
         enemies.forEach(enemiesWalk, this);
 
 
@@ -216,7 +222,7 @@ function inGame() {
 
     inGame.render = function () {
         // inGame.game.debug.body(player);
-        // coins.forEach(debugDraw, this);
+        // Coins.forEach(debugDraw, this);
         // enemies.forEach(debugDraw, this);
     };
 
@@ -267,13 +273,13 @@ function inGame() {
         textEnd.alpha = 1;
         inGame.game.user.updateStats(coinsPicked, distance, 10 * coinsPicked + distance);
         console.log("EndGame");
-        inGame.game.user.save();
+        inGame.game.user.saveMe();
         updateTexts();
         playing = false;
     }
 
     function gameReset() {
-        coins.forEach(killEach, this);
+        Coins.forEach(killEach, this);
         enemies.forEach(killEach, this);
         playerSpeed = 2;
         distance = coinsPicked = 0;
@@ -287,8 +293,8 @@ function inGame() {
 
     function updateTexts() {
         textSpeed.setText("Speed: " + (playerSpeed === 30 ? "max" : (playerSpeed * 10).toFixed(0)));
-        textCoins.setText("Coins: " + coinsPicked + (playing ? "" : "/" + inGame.game.user.highestCoins));
-        textDistance.setText("Distance: " + (distance / 10).toFixed(0) + (playing ? "" : "/" + (inGame.game.user.highestDistance / 10).toFixed(0)));
+        textCoins.setText("Coins: " + coinsPicked + (playing ? "" : "/" + inGame.game.user.HighestCoins));
+        textDistance.setText("Distance: " + (distance / 10).toFixed(0) + (playing ? "" : "/" + (inGame.game.user.HighestDistance / 10).toFixed(0)));
     }
 
     function moveHandler(pointer, x, y, onDown) {
@@ -310,7 +316,7 @@ function inGame() {
     }
 
     function spawnCoin(x, y) {
-        var coin = coins.create(x, y, 'coin');
+        var coin = Coins.create(x, y, 'coin');
         coin.animations.add('rotation', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
         coin.animations.play('rotation');
     }

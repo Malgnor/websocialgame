@@ -2,7 +2,7 @@
 namespace WebSocialGame.Models {
     public class User {
         public int UserID { get; set; }
-        public int FBID { get; set; }
+        public long FBID { get; set; }
         public string Name { get; set; }
         public int Coins { get; set; }
         public int TotalCoins { get; set; }

@@ -29,7 +29,8 @@ namespace WebSocialGame.Controllers {
 
         [ResponseType(typeof(User))]
         [Route("getFB/{id}")]
-        public async Task<IHttpActionResult> GetFb(int id) {
+        public async Task<IHttpActionResult> GetFb(long id)
+        {
             User user = await db.Users.Where(e => e.FBID == id).SingleOrDefaultAsync();
             if(user == null) {
                 return NotFound();
@@ -40,7 +41,7 @@ namespace WebSocialGame.Controllers {
 
         [ResponseType(typeof(bool))]
         [Route("existsFB/{id}")]
-        public async Task<IHttpActionResult> GetExistsFb(int id) {
+        public async Task<IHttpActionResult> GetExistsFb(long id) {
             return Ok(UserFBExists(id));
         }
 
@@ -94,7 +95,7 @@ namespace WebSocialGame.Controllers {
             return db.Users.Count(e => e.UserID == id) > 0;
         }
 
-        private bool UserFBExists(int id) {
+        private bool UserFBExists(long id) {
             return db.Users.Count(e => e.FBID == id) > 0;
         }
     }

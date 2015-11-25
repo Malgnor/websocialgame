@@ -26,84 +26,94 @@
 
     function User() {
         var self = this;
-        this.userID = 0;
-        this.fBID = 0;
-        this.name = "Guest";
+        this.UserID = 0;
+        this.FBID = 0;
+        this.Name = "Guest";
 
-        this.coins = 0;
+        this.Coins = 0;
         //this.spentCoins = 0;
-        this.totalCoins = 0;
-        this.highestCoins = 0;
+        this.TotalCoins = 0;
+        this.HighestCoins = 0;
 
-        this.highestDistance = 0;
-        this.totalDistance = 0;
+        this.HighestDistance = 0;
+        this.TotalDistance = 0;
 
-        this.highestScore = 0;
+        this.HighestScore = 0;
 
-        this.updateStats = function (coins, distance, score) {
-            self.coins += Math.floor(coins);
-            self.totalCoins += Math.floor(coins);
-            if (coins > self.highestCoins) {
-                self.highestCoins = Math.floor(coins);
+        this.updateStats = function (Coins, distance, score) {
+            self.Coins += Math.floor(Coins);
+            self.TotalCoins += Math.floor(Coins);
+            if (Coins > self.HighestCoins) {
+                self.HighestCoins = Math.floor(Coins);
             }
 
-            self.totalDistance += Math.floor(distance);
-            if (distance > self.highestDistance) {
-                self.highestDistance = Math.floor(distance);
+            self.TotalDistance += Math.floor(distance);
+            if (distance > self.HighestDistance) {
+                self.HighestDistance = Math.floor(distance);
             }
 
-            if (score > self.highestScore) {
-                self.highestScore = Math.floor(score);
+            if (score > self.HighestScore) {
+                self.HighestScore = Math.floor(score);
             }
         };
 
-        this.save = function () {
-            if (self.fBID === 0) return;
+        this.saveMe = function () {
+            if (self.FBID === 0) return;
             console.log("Save");
             saveUser(self);
         };
 
-        var onLoad = function (loadedUser) {
-            self.userID = loadedUser.userID;
-            self.fBID = loadedUser.fBID;
-            self.name = loadedUser.name;
+        var onLoadMe = function (loadedUser) {
+            console.log("onLoadMe");
+            console.log(loadedUser);
+            self.UserID = loadedUser.UserID;
+            self.FBID = loadedUser.FBID;
+            self.Name = loadedUser.Name;
 
-            self.coins = loadedUser.coins;
+            self.Coins = loadedUser.Coins;
             //self.spentCoins = loadedUser.spentCoins;
-            self.totalCoins = loadedUser.totalCoins;
-            self.highestCoins = loadedUser.highestCoins;
+            self.TotalCoins = loadedUser.TotalCoins;
+            self.HighestCoins = loadedUser.HighestCoins;
 
-            self.highestDistance = loadedUser.highestDistance;
-            self.totalDistance = loadedUser.totalDistance;
+            self.HighestDistance = loadedUser.HighestDistance;
+            self.TotalDistance = loadedUser.TotalDistance;
 
-            self.highestScore = loadedUser.highestScore;
+            self.HighestScore = loadedUser.HighestScore;
+            console.log(self);
         };
 
-        this.load = function () {
-            console.log("Load");
-            loadUser(self.fBID, onLoad);
+        this.loadMe = function () {
+            console.log("loadMe");
+            loadUser(self.FBID, onLoadMe);
         };
 
         return this;
     };
 
     function saveUser(userToSave) {
-        $.ajax({ url: "existsFB/" + userToSave.fBID }).done(function (response) {
+        console.log("saveUser");
+        console.log(userToSave);
+        $.ajax({ url: "existsFB/" + userToSave.FBID }).done(function (response) {
+            console.log("existsFB/" + userToSave.FBID);
+            console.log(response);
             if (response) {
+                console.log(userToSave);
                 $.ajax({
                     method: "PUT",
-                    url: "api/Users",
+                    url: "api/Users/" + userToSave.UserID,
                     data: userToSave
                 }).done(function (msg) {
-                    console.log(msg);
+                    console.log("PUT/api/Users/" + userToSave.UserID);
                 }).error(ajaxError);
             } else {
+                console.log(userToSave);
                 $.ajax({
                     method: "POST",
                     url: "api/Users",
                     data: userToSave
                 }).done(function (userSaved) {
-                    user.userID = userSaved.userID;
+                    user.UserID = userSaved.UserID;
+                    console.log("POST/api/Users");
                     console.log(userSaved);
                     console.log(user);
                 }).error(ajaxError);
@@ -114,8 +124,11 @@
     function loadUser(id, callback) {
 
         $.ajax({ url: "existsFB/" + id }).done(function (response) {
+            console.log("existsFB/" + id);
+            console.log(response);
             if (response) {
                 $.ajax({ url: "getFb/" + id }).done(function (userLoaded) {
+                    console.log("getFb/" + id);
                     callback(userLoaded);
                 }).error(ajaxError);
             }
